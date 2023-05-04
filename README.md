@@ -72,12 +72,15 @@ README
 
 ##### Команды
 
-* `docker-compose -f docker-compose.prod.yml build` - сборка контейнеров 
-* `docker-compose -f docker-compose.prod.yml up` - запуск контейнеров 
+* `docker-compose -f docker-compose.prod.yml build` - сборка контейнеров
+* `docker-compose -f docker-compose.prod.yml up` - запуск контейнеров
 
 ### Примечания
 
 * При разработке можно убрать или добавить зависимости
-    
+
     `docker-compose run server poetry remove req_name`
     `docker-compose run server poetry add req_name`
+
+
+docker-compose run --rm --service-ports server

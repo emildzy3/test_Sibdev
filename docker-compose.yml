@@ -1,6 +1,7 @@
 version: '3.3'
 services:
     server:
+      platform: linux/arm64/v8
       build:
         context: ./
         dockerfile: ./server/Dockerfile
@@ -13,11 +14,17 @@ services:
         - db
       environment:
         DEBUG: 'True'
-        DATABASE_URL: 'postgres://postgres:postgres@db:5432/postgres'
+        DATABASE_URL: 'postgres://deals_admin:123456@db:5432/deals'
 
     db:
-      image: postgres:12.4-alpine
+      platform: linux/arm64/v8
+      image: postgres:14.6-alpine
+      volumes:
+        - postgres_data:/var/lib/postgresql/
       environment:
-        POSTGRES_DB: postgres
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: deals
+        POSTGRES_USER: deals_admin
+        POSTGRES_PASSWORD: 123456
+
+volumes:
+  postgres_data:

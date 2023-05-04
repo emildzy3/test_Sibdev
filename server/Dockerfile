@@ -1,6 +1,7 @@
-FROM python:3.9.4-slim
+FROM python:3.10.6-slim
 
-RUN apt-get update && apt-get install -y git libpq-dev postgresql-client && pip install poetry && poetry config virtualenvs.create false
+RUN apt-get update && apt-get install -y git libpq-dev postgresql-client && pip install pillow && \
+pip install --use-pep517 psycopg2-binary && pip install poetry && poetry config virtualenvs.create false
 WORKDIR /server
 
 COPY ./server/pyproject.toml /server/

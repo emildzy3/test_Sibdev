@@ -1,16 +1,22 @@
-from fabric.api import local
+from fabric import local
 
 
 def makemigrations(app=''):
-    local("docker exec -i $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py makemigrations {}".format(app))
+    local(
+        "docker exec -i $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py makemigrations {}"
+        .format(app))
 
 
 def migrate(app=''):
-    local("docker exec -i $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py migrate {}".format(app))
+    local(
+        "docker exec -i $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py migrate {}"
+        .format(app))
 
 
 def createsuperuser():
-    local("docker exec -it $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py createsuperuser")
+    local(
+        "docker exec -it $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py createsuperuser"
+    )
 
 
 def bash():
@@ -18,7 +24,8 @@ def bash():
 
 
 def shell():
-    local("docker exec -it $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py shell")
+    local(
+        "docker exec -it $(docker ps | grep server_ | awk '{{ print $1 }}') python manage.py shell")
 
 
 def dev():
