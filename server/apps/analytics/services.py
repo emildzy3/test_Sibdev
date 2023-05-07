@@ -96,7 +96,6 @@ class DealsDataParse:
 
     def _get_items_by_row(self) -> DealsDataItem:
         #eample row: ['bellwether', 'Цаворит', '612', '6', '2018-12-14 08:29:52.506166']
-        print(self.row)
         try:
             gem_title = self.row[1]
             datetime_str = self.row[4]

@@ -11,7 +11,7 @@ class AnalyticsSerializer(serializers.Serializer):
 
 class UserListSerializer(serializers.ModelSerializer):
     spent_money = serializers.IntegerField()
-    gems = serializers.CharField()
+    gems = serializers.CharField(allow_blank=True)
 
     class Meta:
         model = models.Deals

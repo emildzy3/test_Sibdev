@@ -47,9 +47,9 @@ class AnalyticsViewSet(
             )
 
     def list(self, request, *args, **kwargs):
-        cached_data = cache.get('response_data')
-        if cached_data:
-            return Response({'response': cached_data}, status=status.HTTP_200_OK)
+        # cached_data = cache.get('response_data')
+        # if cached_data:
+        #     return Response({'response': cached_data}, status=status.HTTP_200_OK)
 
         user_list = services.UserListService()
         customer_data = user_list.get_customer_with_data()
@@ -59,6 +59,6 @@ class AnalyticsViewSet(
         )
         if serializar.is_valid():
             cache.set('response_data', serializar.data, 60 * 15)
-            return Response({'response”': serializar.data}, status=status.HTTP_200_OK)
+            return Response({'response': serializar.data}, status=status.HTTP_200_OK)
         return Response(
             {'response': serializar.errors}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
