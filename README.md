@@ -47,6 +47,6 @@ docker-compose -f docker-compose.prod.yml up
 
     `docker-compose run server poetry remove req_name`
     `docker-compose run server poetry add req_name`
-* Запуск тестов:
+* Запуск тестов внутри контейнера:
 
     `python manage.py test`
