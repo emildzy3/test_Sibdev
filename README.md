@@ -17,12 +17,18 @@ docker-compose build &&
 
 docker-compose up
 ```
+
 или
 ```
 docker-compose build &&
 
 docker-compose run --rm --service-ports server
 ```
+При первом запуске, необходимо применить миграции:
+```
+docker exec -it ... python manage.py migrate
+```
+
 ## Запуск сервера на nginx (`localhost:80`)
 
 ```
