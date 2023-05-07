@@ -14,7 +14,7 @@ class UserListSerializer(serializers.ModelSerializer):
     gems = serializers.CharField(allow_blank=True)
 
     class Meta:
-        model = models.Deals
+        model = models.Deal
         fields = [
             'username',
             'spent_money',

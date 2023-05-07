@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from ..models import Deals
+from ..models import Deal
 
 
 class TestCreate(APITestCase):
@@ -21,11 +21,11 @@ class TestCreate(APITestCase):
         assert response.status_code == status.HTTP_202_ACCEPTED
         assert response.data.get('Status') == 'OK'
 
-        count_deals = Deals.objects.all().count()
+        count_deals = Deal.objects.all().count()
         assert count_deals == 48
 
     def test_post_create_second_data(self):
-        count_deals_start = Deals.objects.all().count()
+        count_deals_start = Deal.objects.all().count()
         assert count_deals_start == 0
         with open('apps/analytics/tests/test_files/test_file_good.csv', 'rb') as file:
             data = {
@@ -37,7 +37,7 @@ class TestCreate(APITestCase):
                 data=data,
             )
             file.close()
-        count_deals_first_send = Deals.objects.all().count()
+        count_deals_first_send = Deal.objects.all().count()
         assert count_deals_first_send == 48
 
         with open('apps/analytics/tests/test_files/test_file_good.csv', 'rb') as file:
@@ -50,11 +50,11 @@ class TestCreate(APITestCase):
                 data=data,
             )
             file.close()
-        count_deals_second_send = Deals.objects.all().count()
+        count_deals_second_send = Deal.objects.all().count()
         assert count_deals_second_send == 48
 
     def test_post_create_break_file(self):
-        count_deals_start = Deals.objects.all().count()
+        count_deals_start = Deal.objects.all().count()
         assert count_deals_start == 0
         with open('apps/analytics/tests/test_files/test_file_break.csv', 'rb') as file:
             data = {
@@ -71,11 +71,11 @@ class TestCreate(APITestCase):
             'ERROR, Desc: as "Ошибка при распарсивании данных. Убедитесь, что файл соотвествует ' +
             'шаблону"- в процессе обработки файла произошла ошибка.')
 
-        count_deals_start = Deals.objects.all().count()
+        count_deals_start = Deal.objects.all().count()
         assert count_deals_start == 0
 
     def test_post_create_second_break_file(self):
-        count_deals_start = Deals.objects.all().count()
+        count_deals_start = Deal.objects.all().count()
         assert count_deals_start == 0
 
         with open('apps/analytics/tests/test_files/test_file_good.csv', 'rb') as file:
@@ -88,7 +88,7 @@ class TestCreate(APITestCase):
                 data=data,
             )
             file.close()
-        count_deals_first_send = Deals.objects.all().count()
+        count_deals_first_send = Deal.objects.all().count()
         assert count_deals_first_send == 48
 
         with open('apps/analytics/tests/test_files/test_file_break.csv', 'rb') as file:
@@ -106,5 +106,5 @@ class TestCreate(APITestCase):
             'ERROR, Desc: as "Ошибка при распарсивании данных. Убедитесь, что файл соотвествует ' +
             'шаблону"- в процессе обработки файла произошла ошибка.')
 
-        count_deals = Deals.objects.all().count()
+        count_deals = Deal.objects.all().count()
         assert count_deals == 48

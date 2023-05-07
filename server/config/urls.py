@@ -1,23 +1,14 @@
 from apps.analytics.routers import router as analytics_router
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path
-from rest_framework import routers
-from django.urls import re_path
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
+from django.urls import include, path, re_path
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions, routers
 
 admin.site.site_header = 'Аналитика'
 admin.site.site_title = 'Аналитика'
 admin.site.index_title = 'Панель управления'
-
-router = routers.DefaultRouter()
-router.registry.extend(analytics_router.registry)
-
-api_urlpatterns = [
-    path('api/v1/', include(router.urls)),
-]
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -29,6 +20,13 @@ schema_view = get_schema_view(
     public=True,
     permission_classes=(permissions.AllowAny, ),
 )
+
+router = routers.DefaultRouter()
+router.registry.extend(analytics_router.registry)
+
+api_urlpatterns = [
+    path('api/v1/', include(router.urls)),
+]
 
 urlpatterns_swagger = [
     re_path(

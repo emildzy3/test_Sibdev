@@ -3,7 +3,6 @@ from pathlib import Path
 
 import dj_database_url
 
-
 BASE_DIR = Path(__file__).parents[2]
 SECRET_KEY = '!6xmo&@!7dzw8p6yxjnj&&1lur%4+fs!r2tuzb#6j(64s@m6)*'
 ROOT_URLCONF = 'config.urls'
@@ -15,12 +14,14 @@ SITE_ID = 1
 # Project Constants
 ##################################################################
 NUMBER_OF_CLIENTS = 5
+DEFAULT_CACHE_TIME = 60 * 15
+NUMBER_OF_REPETITIONS_GEMS = 2
 
 ##################################################################
 # SWAGGER
 ##################################################################
 SWAGGER_SETTINGS = {
-    "DEFAULT_MODEL_RENDERING": "example"
+    'DEFAULT_MODEL_RENDERING': 'example'
 }
 ##################################################################
 # Debug settings (with docker)

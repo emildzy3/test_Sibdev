@@ -1,11 +1,12 @@
-FROM python:3.9.4-slim AS server
+FROM python:3.10.6-slim AS server
 
 WORKDIR /server
 
 COPY ./server/pyproject.toml /server/
 COPY ./server/poetry.lock /server/
 
-RUN pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev
+RUN pip install --use-pep517 psycopg2-binary && pip install poetry && poetry config virtualenvs.create false && pip install poetry && poetry install --no-dev
+
 
 COPY ./server /server
 

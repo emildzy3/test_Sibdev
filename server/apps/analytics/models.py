@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Deals(models.Model):
+class Deal(models.Model):
     """
     Список сделок
     """
@@ -13,7 +13,7 @@ class Deals(models.Model):
 
     gems = models.ForeignKey(
         verbose_name='Камень',
-        to='Gems',
+        to='Gem',
         on_delete=models.CASCADE,
         related_name='deals',
     )
@@ -27,25 +27,25 @@ class Deals(models.Model):
     )  # yapf: disable
 
     date = models.DateTimeField(
-        verbose_name='Колличество товара',
+        verbose_name='Дата сделки',
     )  # yapf: disable
 
     class Meta:
         ordering = ['-date']
-        verbose_name = 'Покупка'
-        verbose_name_plural = 'Покупки'
+        verbose_name = 'Сделка'
+        verbose_name_plural = 'Сделки'
 
     def __str__(self):
         return f'{self.username} - {self.total}'
 
 
-class Gems(models.Model):
+class Gem(models.Model):
     """
     Камень
     """
 
     title = models.CharField(
-        verbose_name='Название камня',
+        verbose_name='Название',
         max_length=150,
     )
 

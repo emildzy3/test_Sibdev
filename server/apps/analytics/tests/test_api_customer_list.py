@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -45,6 +46,12 @@ class TestCustomerList(APITestCase):
         consumer_list_to_check.is_valid()
         self.consumer_list_to_check_serializer = consumer_list_to_check
 
+    def test_get_customer_list_empty(self):
+        cache.clear()
+        response = self.client.get(self.URL)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data.get('response') == []
+
     def test_get_customer_list(self):
         with open('apps/analytics/tests/test_files/test_file_good.csv', 'rb') as file:
             data = {
@@ -60,8 +67,3 @@ class TestCustomerList(APITestCase):
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data.get('response')[0] == self.consumer_list_to_check_serializer.data[0]
-
-    def test_get_customer_list_empty(self):
-        response = self.client.get(self.URL)
-        assert response.status_code == status.HTTP_200_OK
-        assert response.data.get('response') == []

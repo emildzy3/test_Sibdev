@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, status, viewsets
@@ -17,7 +18,7 @@ class AnalyticsViewSet(
     Работа с Аналитикой
     """
 
-    model = models.Deals
+    model = models.Deal
     serializer_class = serializers.AnalyticsSerializer
     parser_classes = (MultiPartParser, )
 
@@ -28,13 +29,16 @@ class AnalyticsViewSet(
             return serializers.UserListSerializer
         return super().get_serializer_class()
 
-    @swagger_auto_schema(operation_description='Добавить файл', responses=CREATE_RESPONSE_SCHEMA)
+    @swagger_auto_schema(
+        operation_description='Добавить файл',
+        responses=CREATE_RESPONSE_SCHEMA,
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         received_file = serializer.validated_data.get('deals')
         try:
-            services.DealsDataCreateService(received_file=received_file).create_deals()
+            services.DealsCreateService(received_file=received_file).create_deals()
             cache.clear()
             return Response({'Status': 'OK'}, status=status.HTTP_202_ACCEPTED)
         except exceptions.ReadFileError as exc:
@@ -47,18 +51,21 @@ class AnalyticsViewSet(
             )
 
     def list(self, request, *args, **kwargs):
-        # cached_data = cache.get('response_data')
-        # if cached_data:
-        #     return Response({'response': cached_data}, status=status.HTTP_200_OK)
+        cached_data = cache.get('response_data')
+        if cached_data:
+            return Response({'response': cached_data}, status=status.HTTP_200_OK)
 
         user_list = services.UserListService()
         customer_data = user_list.get_customer_with_data()
+
         serializar = self.get_serializer(
             data=customer_data,
             many=True,
         )
         if serializar.is_valid():
-            cache.set('response_data', serializar.data, 60 * 15)
+            cache.set('response_data', serializar.data, settings.DEFAULT_CACHE_TIME)
             return Response({'response': serializar.data}, status=status.HTTP_200_OK)
         return Response(
-            {'response': serializar.errors}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            {'response': serializar.errors},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )

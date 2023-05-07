@@ -23,7 +23,7 @@ class CustomerData(TypedDict):
 
 
 @dataclass
-class DealsDataCreateService:
+class DealsCreateService:
     received_file: InMemoryUploadedFile
 
     def create_deals(self) -> None:
@@ -49,7 +49,7 @@ class DealsDataCreateService:
     def _get_deals_list_for_create(
         self,
         received_file_read: Iterator[list[str]],
-    ) -> List['models.Deals']:
+    ) -> List['models.Deal']:
         deals_list = []
         for row in received_file_read:
             if row:
@@ -58,15 +58,15 @@ class DealsDataCreateService:
         return deals_list
 
     def _delete_old_deals(self) -> None:
-        models.Deals.objects.all().delete()
+        models.Deal.objects.all().delete()
 
     def _create_new_deals(
         self,
-        deals_list: List['models.Deals'],
+        deals_list: List['models.Deal'],
     ) -> None:
         try:
-            models.Deals.objects.bulk_create(deals_list)
-        except ValueError as exc:
+            models.Deal.objects.bulk_create(deals_list)
+        except (ValueError, TypeError) as exc:
             raise exceptions.ReadFileError(
                 'Ошибка при сохранении данных. Убедитесь, что данные внутри файла соответсвуют \
                     шаблону',
@@ -77,19 +77,19 @@ class DealsDataCreateService:
 class DealsDataParse:
     row: list[str]
 
-    def convert_row_for_deals(self) -> models.Deals:
+    def convert_row_for_deals(self) -> models.Deal:
         gem_title, datetime_str, customer_login, total, quantity = self._get_items_by_row()
         date = self._convert_str_to_datetime(datetime_str=datetime_str)
-        gems, _ = models.Gems.objects.get_or_create(title=gem_title)
+        gems, _ = models.Gem.objects.get_or_create(title=gem_title)
         try:
-            return models.Deals(
+            return models.Deal(
                 username=customer_login,
                 gems=gems,
                 total=total,
                 quantity=quantity,
                 date=date,
             )
-        except IndexError as exc:
+        except ValueError as exc:
             raise exceptions.ReadFileError(
                 'Ошибка при создании Deals. Убедитесь, что файл соотвествует шаблону',
             ) from exc
@@ -123,7 +123,7 @@ class DealsDataParse:
 class UserListService:
 
     def __init__(self, *args, **kwargs):
-        self.top_customer_list = models.Deals.objects.values('username')\
+        self.top_customer_list = models.Deal.objects.values('username')\
             .annotate(spent_money=Sum('total'))\
             .annotate(gems_list=ArrayAgg('gems__title', distinct=True))\
             .order_by('-spent_money')[:settings.NUMBER_OF_CLIENTS]
@@ -134,14 +134,18 @@ class UserListService:
 
     def _get_popular_gems_list(self) -> list[str]:
         result_gems_list = list(
-            chain(*self.top_customer_list.values_list(
-                'gems_list',
-                flat=True,
-            )))
-        popular_gems = []
+            chain(
+                *self.top_customer_list.values_list(
+                    'gems_list',
+                    flat=True,
+                ),
+            ),
+        )
 
+        popular_gems = []
         for i in result_gems_list:
-            if result_gems_list.count(i) > 1 and i not in popular_gems:
+            repetitions_gems_count = settings.NUMBER_OF_REPETITIONS_GEMS
+            if result_gems_list.count(i) >= repetitions_gems_count and i not in popular_gems:
                 popular_gems.append(i)
         return popular_gems
 
@@ -158,5 +162,6 @@ class UserListService:
                     'username': username.get('username'),
                     'spent_money': username.get('spent_money'),
                     'gems': ', '.join(popular_gems_in_gems_customer)
-                })
+                },
+            )
         return customer_data
