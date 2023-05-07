@@ -11,6 +11,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_APPS = [
+    'drf_yasg',
 ]
 
 CUSTOM_APPS = [

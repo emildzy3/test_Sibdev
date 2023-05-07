@@ -1,34 +1,14 @@
 from django.db import models
 
 
-class Customer(models.Model):
-    """
-    Покупатель
-    """
-
-    login = models.CharField(
-        verbose_name='Логин пользователя',
-        max_length=150,
-    )
-
-    class Meta:
-        verbose_name = 'Покупатель'
-        verbose_name_plural = 'Покупатели'
-
-    def __str__(self):
-        return self.login
-
-
 class Deals(models.Model):
     """
     Список сделок
     """
 
-    customer = models.ForeignKey(
-        verbose_name='Покупатель',
-        to='Customer',
-        on_delete=models.CASCADE,
-        related_name='deals',
+    username = models.CharField(
+        verbose_name='Логин пользователя',
+        max_length=150,
     )
 
     gems = models.ForeignKey(
@@ -56,7 +36,7 @@ class Deals(models.Model):
         verbose_name_plural = 'Покупки'
 
     def __str__(self):
-        return f'{self.customer} - {self.total}'
+        return f'{self.username} - {self.total}'
 
 
 class Gems(models.Model):

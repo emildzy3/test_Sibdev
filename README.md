@@ -84,3 +84,16 @@ README
 
 
 docker-compose run --rm --service-ports server
+
+---
+### Запуск сервера для разработки(localhost:8000):
+```
+docker-compose build && docker-compose up
+```
+
+
+### Запуск сервера на nginx (localhost:80)
+
+```
+docker-compose -f docker-compose.prod.yml build && docker-compose -f docker-compose.prod.yml up
+```
